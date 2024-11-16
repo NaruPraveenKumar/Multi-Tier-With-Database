@@ -28,6 +28,11 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<jacoco.version>0.8.7</jacoco.version>
+   		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+    		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,6 +63,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+    <groupId>org.jacoco</groupId> 
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.7</version>
+</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -75,21 +85,52 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
+
+	
 	</build>
-	<distributionManagement>
-        <repositories>
-		 <repository>
-        <id>maven-snapshots</id>
-        <url>http://43.205.230.67:8081/repository/maven-releases/</url>
-    </repository>
+<distributionManagement>
+    <!-- Repository for release versions -->
     <repository>
-        <id>maven-snapshots</id>
-        <url>http://43.205.230.67:8081/repository/maven-snapshots/</url>
+        <id>maven-releases</id>
+        <name>Release Repository</name>
+        <url>http://43.205.230.67:8081/repository/maven-releases/</url>
+        <releases>
+            <enabled>true</enabled>  <!-- Enable release deployment -->
+            <updatePolicy>always</updatePolicy> <!-- Defines the frequency of repository update checks -->
+        </releases>
     </repository>
-</repositories>
 
+    <!-- Repository for snapshot versions -->
+    <snapshotRepository>
+        <id>maven-snapshots</id>
+        <name>Snapshot Repository</name>
+        <url>http://43.205.230.67:8081/repository/maven-snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>  <!-- Enable snapshot deployment -->
+            <updatePolicy>always</updatePolicy> <!-- Defines the frequency of repository update checks -->
+        </snapshots>
+    </snapshotRepository>
+</distributionManagement>
 
-    </distributionManagement>
 
 </project>
