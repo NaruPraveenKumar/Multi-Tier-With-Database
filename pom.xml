@@ -117,6 +117,9 @@
     <enabled>true</enabled>
   </releases>
   <snapshots>
+	  <id>maven-snap-shots</id>
+        <url>http://43.205.230.67:8081/repository/maven-snapshots/</url>
+
     <enabled>true</enabled>
   </snapshots>
 </repository>
