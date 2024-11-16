@@ -111,7 +111,7 @@
 
 <distributionManagement>
         <repository>
-  <id>devshack-maven</id>
+  <id>maven-releases</id>
   <url>http://43.205.230.67:8081/repository/maven-releases/</url>
   <releases>
     <enabled>true</enabled>
