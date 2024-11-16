@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+    
+    tools{
+        maven "maven3"
+    }
+    environment {
+        SCANNER_HOME=tool 'sonar'
+    }
+
+    stages {
+        stage('checkout') {
+            steps {
+               git branch: 'start', url: 'https://github.com/NaruPraveenKumar/Multi-Tier-With-Database.git'
+            }
+        }
+         stage('compile') {
+            steps {
+              sh "mvn compile"
+            }
+        }
+        
+         stage('testing') {
+            steps {
+              sh "mvn test"
+            }
+        }
+    
+         
+
+        stage('trivy') {
+            steps {
+               sh "trivy fs --format table -o fs.html ."
+            }
+        }
+        
+        stage('sonarqube') {
+            steps {
+               withSonarQubeEnv('sonar') {
+            sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=multitierwithdatabase \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=multitierwithdatabase '''
+        }
+            }
+        }
+        
+        stage('publish') {
+            steps {
+               withMaven(globalMavenSettingsConfig: 'devopsshack-project', jdk: '', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+               sh "mvn deploy"
+      }
+            }
+        }
+        
+          stage('buid image') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker') {
+                    sh "docker build -t narupraveen/bank:v1.0.0 . " 
+               }
+                }
+            }
+        }
+        
+        stage('trivy image scan') {
+            steps {
+               sh "trivy image  --format table -o image.html narupraveen/bank:v1.0.0 "
+            }
+        }
+        
+         stage('push image') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker') {
+                    sh "docker push narupraveen/bank:v1.0.0 " 
+               }
+                }
+            }
+        }
+        
+    }
+}
