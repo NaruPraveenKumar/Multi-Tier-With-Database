@@ -113,16 +113,12 @@
         <repository>
   <id>maven-releases</id>
   <url>http://43.205.230.67:8081/repository/maven-releases/</url>
-  <releases>
-    <enabled>true</enabled>
-  </releases>
+	</repository>
   <snapshots>
-	  <id>maven-snap-shots</id>
+	  <id>maven-snapshots</id>
         <url>http://43.205.230.67:8081/repository/maven-snapshots/</url>
-
-    <enabled>true</enabled>
   </snapshots>
-</repository>
+
     </distributionManagement>
 
 </project>
